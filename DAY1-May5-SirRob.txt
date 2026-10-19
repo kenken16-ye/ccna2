@@ -133,9 +133,9 @@ vlan 10
 vlan 50
    name IPCameraVLAN
 vlan 69
-   name vlanNIrobert
+   name vlanNIken
 vlan 70
-    name EXTRAVLAN
+    name kabuhayan
 vlan 71
     name HRD-POLICY
 vlan 100
@@ -172,10 +172,10 @@ config t
 ip routing
 ip dhcp pool CAMERA6
 host 10.92.50.6 255.255.255.0
-client-identifier 001a.xxxx.yyyy
+client-identifier 001a.070b.4716
 ip dhcp pool CAMERA8
 host 10.92.50.8 255.255.255.0
-client-identifier 001a.xxxx.yyyy 
+client-identifier 001a.0709.bd03 
 end
 show ip dhcp binding
 
@@ -204,20 +204,7 @@ config t
 	 end
    
 !!!CUCM ANALOG PHONES CONFIG
-configure terminal
-dial-peer voice 1 pots
-   destination-pattern 9200
-   port 0/0/0
-dial-peer voice 2 pots
-   destination-pattern 9201
-   port 0/0/1
-dial-peer voice 3 pots
-   destination-pattern 9202
-   port 0/0/2
-dial-peer voice 4 pots
-   destination-pattern 9203
-   port 0/0/3
-end
+                                                                                                                                                                                                                                                            
 
 !!IP telephony or Six Digit Salary.
 config t   
@@ -246,16 +233,16 @@ ephone-dn 7
 ephone-dn 8
   number 9288
  ephone-dn 9
-   number 9299
+   number 9253
 ephone-dn 10
- number 9298
+ number 9281
 Ephone 1
-  Mac-address cafe.face.baba
+  Mac-address ccd8.c1fb.16f3
   type 8945
   button 1:8 2:7 3:6 4:5
   restart
 Ephone 2
-  Mac-address fafa.caca.baba
+  Mac-address ccd8.c1fb.1103
   type 8945
   button 1:4 2:3 3:2 4:1
   restart  
@@ -288,10 +275,10 @@ configure terminal
  destination-pattern 11..
  session target ipv4:10.11.100.8
  codec g711ULAW
-  !dial-peer voice 92 Voip
-  !destination-pattern 92..
-  !session target ipv4:10.92.100.8
-  !codec g711ULAW
+  dial-peer voice 12 Voip
+  destination-pattern 12..
+  session target ipv4:10.12.100.8
+  codec g711ULAW
 dial-peer voice 21 Voip
  destination-pattern 21..
  session target ipv4:10.21.100.8
@@ -352,10 +339,10 @@ dial-peer voice 91 Voip
  destination-pattern 91..
  session target ipv4:10.91.100.8
  codec g711ULAW
-dial-peer voice 92 Voip
- destination-pattern 92..
- session target ipv4:10.92.100.8
- codec g711ULAW
+!dial-peer voice 92 Voip
+ !destination-pattern 92..
+ !session target ipv4:10.92.100.8
+ !codec g711ULAW
 
 TASK3***TASK3***TASK3***
 TASK3***TASK3***TASK3***
