@@ -1,0 +1,30 @@
+!@C1
+conf t
+ vlan 60
+ name TELEPERFORMANCE
+Int vlan 60
+ no shut
+ ip add 10.78.226.1 255.255.254.0
+ ip ospf 1 area 0
+ ip dhcp excluded-add 10.78.226.1 10.78.226.100
+ ip dhcp pool TELEPERFORMANCE.COM
+ network 10.78.226.0 255.255.254.0
+ default-router 10.78.226.1
+ domain-name TELEPERFORMANCE.COM
+ dns-server 10.92.1.10
+ end
+
+!@A1
+conf t
+ int e0/0
+ switchport mode access
+ switchport access vlan 60
+ end
+
+!@P2
+conf t
+ int e0/0
+ no shut
+ ip add dhcp
+ end
+ 
