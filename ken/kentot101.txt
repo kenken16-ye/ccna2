@@ -1,0 +1,114 @@
+config t
+vlan 21
+ name FINANCE
+ exit
+Int vlan 21
+ no shut
+ ip add 10.92.0.1 255.255.255.128
+ ip ospf 1 area 0
+ip dhcp excluded-add 10.92.0.1 10.92.0.100
+ip dhcp pool FINANCE.com
+ network 10.92.0.0 255.255.255.128
+ default-router 10.92.0.1
+ domain-name FINANCE.com
+ dns-server 10.92.1.10
+ option 150 ip 10.92.100.8
+ Int Fa 0/7
+  swi Voice vlan 21
+  do sh ip dhcp binding
+
+
+config t
+vlan 22
+ name ADMIN
+ exit
+Int vlan 22
+ no shut
+ ip add 10.92.0.129 255.255.255.224
+ ip ospf 1 area 0
+ip dhcp excluded-add 10.92.0.129 10.92.0.139
+ip dhcp pool ADMIN.com
+ network 10.92.0.128 255.255.255.224
+ default-router 10.92.0.129
+ domain-name ADMIN.com
+ dns-server 10.92.1.10
+ option 150 ip 10.92.100.8
+ Int Fa 0/5
+  swi Voice vlan 22
+  do sh ip dhcp binding
+
+!@C1
+config t
+vlan 40
+ name KENDRICK
+ exit
+Int vlan 40
+ no shut
+ ip add 192.168.129.1 255.255.255.0
+ ip ospf 1 area 0
+ip dhcp excluded-add 192.168.129.1 192.168.129.20
+ip dhcp pool KENDRICK.com
+ network 192.168.129.0 255.255.255.0
+ default-router 192.168.129.1
+ domain-name KENDRICK.com
+ dns-server 10.92.1.10
+ end
+
+!@A1
+conf t
+ int e0/0
+ switchport mode access
+ switchport access vlan 40
+ end
+
+!@P1
+conf t
+ int e0/0
+ no shut
+ ip add dhcp
+ end
+
+
+3. tanginaaaa
+
+!@C2
+conf t
+ vlan 50
+ name KUPAL
+ exit
+Int vlan 50
+ no shut
+ ip add 172.16.48.1 255.255.240.0
+ ip ospf 1 area 0
+ip dhcp excluded-add 172.16.48.1 172.16.48.101
+ip dhcp pool KUPAL.com
+ network 172.16.48.0 255.255.240.0
+ default-router 172.16.48.1
+ domain-name KUPAL.com
+ dns-server 10.92.1.10
+ end
+
+!@A2
+conf t
+ int e1/0
+ no shut
+ switchport mode access
+ switchport access vlan 50
+ end
+
+!@P2
+conf t
+ int e1/0
+ no shut
+ ip add dhcp
+ end
+
+
+
+
+
+
+
+
+
+
