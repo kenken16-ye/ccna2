@@ -1,0 +1,307 @@
+CIDR	SUBNET MASK		RIVAN FORMAT	WILDCARD
+/18	255.255.192.0		3rd, 64i	0.0.63.255
+/27	255.255.255.224		4th, 32i	0.0.0.31
+/14	255.252.0.0		2nd, 4i		0.3.255.255
+/28	255.255.255.240		4th,16i		0.0.0.15
+
+bit length
+---
+42 	6b	
+1800 	11b
+365 	9b
+980 	10b
+112 	7b
+
+!@A1 C1 primary
+conf t
+ ip route 0.0.0.0 0.0.0.0 192.168.1.129 1
+ ip route 0.0.0.0 0.0.0.0 192.168.1.130 10
+ end
+
+
+
+!@A2 C2 primary
+conf t
+ ip route 0.0.0.0 0.0.0.0 192.168.1.130 1
+ ip route 0.0.0.0 0.0.0.0 192.168.1.129 10
+ end
+
+
+!@P2
+conf t
+ ip route 192.168.1.128 255.255.255.224 10.2.1.2
+ ip route 192.168.1.129 255.255.255.255 10.2.1.1
+ end
+
+
+### EIGRP
+
+!@C1
+conf t
+ router eigrp 100
+  network 10.2.1.0 	0.0.0.255
+  network 10.2.2.0 	0.0.0.255
+  network 192.168.1.128 0.0.0.31
+  network 10.1.4.4 	0.0.0.3
+  end
+
+!@C2
+conf t
+ router eigrp 100
+  network 10.2.1.0 	0.0.0.255
+  network 10.2.2.0 	0.0.0.255
+  network 192.168.1.128 0.0.0.31
+  network 10.1.4.8 	0.0.0.3
+  end
+
+
+EIGRP MULTICAST ADDRESS - 224.0.0.10
+
+
+###
+IGP (Internal Gateway Protocol)
+- Distance Vector
+	-EIGRP
+	-RIP
+- Link state
+	-OSPF
+	-IS-IS
+
+EGP (External Gateway Protocol)
+- Path Vector
+- BGP
+
+5 Types of Hello Messages of EIGRP
+1. Hello - Keep Alive - Determine if a neighbor exist
+2. Query - 
+3. Update
+4. Reply
+5. Hello (ACK)
+
+
+## Unequal Cost Load Balancing
+!@R4
+conf t
+ router eigrp 100
+ variance 10
+ end
+
+!@R3
+conf t
+ router ospf 1
+  router-id 3.3.3.3
+  network 3.3.3.3 0.0.0.0 area 0
+  network 10.1.1.8 0.0.0.3 area 43
+  network 10.1.1.4 0.0.0.3 area 0
+  end
+
+
+!@R4
+conf t
+ router ospf 1
+  router-id 4.4.4.4
+  network 4.4.4.4 0.0.0.3 area 43
+  network 10.1.1.8 0.0.0.3 area 43
+  end
+
+
+!@R2
+conf t
+ router ospf 1
+  router-id 2.2.2.2
+  network 2.2.2.2 0.0.0.0 area 0
+  network 10.1.1.4 0.0.0.3 area 0
+  network 10.1.1.0 0.0.0.3 area 12
+  end
+
+!@R1
+conf t
+ router ospf 1
+  router-id 1.1.1.1
+  exit
+ int lo1
+  ip ospf 1 area 12
+  exit
+ int e1/0
+  ip ospf 1 area 12
+  end
+
+
+Configure Authentication
+!@R4, R3
+conf t
+ key chain CCNA
+  key 1
+   key-string pass
+   crypto md5
+ !
+ int e1/2
+  ip ospf authentication key CCNA
+  end
+
+
+### SEED METRICS FOR REDISTRIBUTION
+1. EIGRP - INFINITY
+2. RIP - INFINITY
+3. OSPF - 20 COST
+4. ISIS - 0 
+5. BGP - based on the igbp
+
+!@R4
+config T
+ router eigrp 100
+  redistribute ospf 1 metric 10000 100 255 1 1500
+  exit
+ router ospf 1
+  redistribute eigrp 100 subnets
+end
+
+###Cost
+Ref BW / Int BW
+
+100 MBPS / 10MBPS
+
+!@ CoreBABA
+conf t
+ int lo10
+  ip add 192.168.92.92 255.255.255.255
+  ip ospf 1 area 92
+  end
+
+!@CoreBABA
+conf t
+ router eigrp 100
+ no network 192.168.0.0 0.0.255.255
+ network 192.168.92.0 0.0.0.255
+ router ospf 1
+   redistribute eigrp 100 subnets metric 2
+   end
+
+!@I2 PLDT
+config t
+ router bgp 2
+ bgp log-neighbor-changes
+ neighbor 207.7.7.1 remote-as 1
+ neighbor 24.2.4.4  remote-as 45
+ neighbor 25.2.5.5  remote-as 45
+ neighbor 32.3.2.3  remote-as 3
+ address-family ipv4
+  neighbor 207.7.7.1 activate
+  neighbor 24.2.4.4  activate
+  neighbor 25.2.5.5  activate
+  neighbor 32.3.2.3  activate
+  network 207.7.7.0 mask 255.255.255.0
+  network 22.22.22.22 mask 255.255.255.255
+  network 24.2.4.4 255.255.255.0
+  network 25.2.5.5 255.255.255.0
+  network 32.3.2.3 255.255.255.0
+  end
+
+network 207.7.7.1 255.255.255.0
+network 24.2.4.4 255.255.255.0
+network 25.2.5.5 255.255.255.0
+network 32.3.2.3 255.255.255.0
+
+
+
+
+conf t
+ ip nat inside source static 10.1.4.6  208.8.8.100
+ ip nat inside source static 10.1.4.10  207.7.7.100
+ end 
+
+
+conf t
+ ip nat inside source static 10.1.4.5 207.7.7.201
+ ip nat inside source static 10.1.4.9 207.7.7.202
+ ip nat inside source static 192.168.1.133 209.9.9.201
+ ip nat inside source static 10.2.2.133 209.9.9.202
+ end 
+ 
+
+conf t
+ access-list 1 permit 10.0.0.0 0.255.255.255
+ access-list 1 permit 172.16.0.0 0.15.255.255
+ access-list 1 permit 192.168.0.0 0.0.255.255
+ access-list 1 permit 192.168.0.0 0.0.255.255
+ !
+ ip nat pool NATPOOL 209.9.9.10 209.9.9.20 netmask 255.255.255.0
+ ip nat inside source list 1 pool NATPOOL
+ end
+
+
+### Design 4 offices using the address space of 10.1.2.0/28
+- Maximize the number of hosts
+
+C:2 bits
+A: /28 + 2 bits = /30
+I: Ipasok si i sa octet many times
+ - 1st office : 10.1.2.0/30
+ - 2nd Office : 10.1.2.4/30
+ - 3rd office : 10.1.2.8/30
+ - 4th Office : 10.1.2.12/30
+
+8 offices 
+
+10.1.3.192/26
+
+C:3bits
+A:/26 + 3bits = /29 (4th,8i)
+I:
+ - 1st office : 10.1.3.192/26
+ - 2nd Office : 10.1.3.200/26
+ - 3rd office : 10.1.3.208/26
+ - 4th Office : 10.1.3.216/26
+ - 5th office : 10.1.3.224/26
+ - 6th Office : 10.1.3.232/26
+ - 7th office : 10.1.3.240/26
+ - 8th Office : 10.1.3.248/26
+
+
+
+=====================
+64 sites
+10.30.64.0/19
+
+C: 6 bits
+A: /19 + 6bits = /25 (4th,128i)
+I:
+ - 1st office : 10.30.64.0/25
+ - 2nd Office : 10.30.64.128/25
+ - 3rd office : 10.30.65.0/25
+ - 4th office : 10.30.65.128/25
+
+!@SW101
+conf t
+ int e0/0
+ NO SWITCHPORT
+  no shut
+  ip add 10.30.65.1 255.255.255.128
+  end
+
+!@102
+conf t
+ int e0/0
+ NO SWITCHPORT
+ no shut
+ ip add 10.30.65.126 255.255.255.128
+ end
+
+Net		10.30.65.0/25
+1st valid	10.30.65.1
+last		10.30.65.126
+broadcast	10.30.65.127
+Noturs		10.30.65.128
+
+
+
+
+
+
+
+
+
+
+
+
+
