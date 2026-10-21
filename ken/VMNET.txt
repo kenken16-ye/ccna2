@@ -1,0 +1,17 @@
+Version: 2.0   10-14-2026
+---------------
+Login: root
+Pass: C1sc0123
+
+Get IP:
+rm -rf /etc/udev/rules.d/70-persistent-net.rules
+reboot
+
+Set NetAdapters:
+NetAdapter 1: NAT (208.8.8.0/24)
+NetAdapter 2: VMNet15 (10.255.10.0/24)
+NetAdapter 3: VMNet16 (10.69.255.0/29)
+NetAdapter 4: VMNet17 (10.69.255.8/29)
+
+!@cmd
+route add 172.16.29.0 mask 255.255.255.0 10.69.255.6
