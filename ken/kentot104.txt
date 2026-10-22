@@ -1,0 +1,189 @@
+!@CoreBABA
+conf t
+ monitor session 1 source int fa0/3, fa0/5, fa0/7
+ monitor session 1 dest int fa0/1, fa0/9
+ end
+
+!@UTM-PH --Internet--
+conf t
+ int g1
+  ip nat outside
+ int g3
+  ip nat inside
+ access-list 1 permit any
+ ip nat inside source list 1 int g1 overload
+ ip route 0.0.0.0 0.0.0.0 208.8.8.2
+ ip name-server 8.8.8.8
+ ip domain lookup
+ end
+
+
+!@UTMPH
+pornhub.com 	66.254.114.41
+redtube.com 	66.254.114.238
+faketaxi.com  	66.254.114.234
+bangbros.com 	66.254.114.234
+pinayflix.com 	104.21.55.88
+sulasok.tv.com  104.21.34.102
+iyottube.com  	208.77.20.35
+
+configure a STANDART ACL named NOPORN to protect your brain
+
+!@UTMPH
+conf t
+ no ip access-list standard NOPORN
+ ip access-list standard NOPORN
+  deny 66.254.114.0 0.0.0.255
+  deny 104.21.0.0 0.0.255.255
+  deny host 208.77.20.35
+  permit any
+ !
+ int g1
+  ip access-group NOPORN in
+  end
+
+!@BALIK PORN
+conf t
+ int g1
+  no ip access-group NOPORN in
+  end
+
+LUNCH ACT
+Block schools- NOSCHOOL
+www.dlsu.edu.ph 	172.66.161.211
+www.ccp.edu.ph	 	50.6.160.47
+www.feu.edu.ph 		184.168.125.216
+www.ue.edu.ph 		155.137.92.102
+
+
+conf t
+ no ip access-list standard NOSCHOOL
+ ip access-list standard NOSCHOOL
+  deny host 172.66.161.211
+  deny host 104.20.42.168
+  deny host 184.168.125.216
+  deny host 50.6.160.47
+  deny host 155.137.92.102
+  permit any
+ !
+ int g1
+  ip access-group NOSCHOOL in
+  end
+
+!@BALIK SCHOOL
+conf t
+ int g1
+  no ip access-group NOSCHOOL in
+  end
+
+
+conf t
+ no ip access-list extended FWP4
+ ip access-list extended FWP4
+ permit tcp Any host www.bet100.com eq 80 log
+ permit tcp Any host www.bet100.com eq 443 log
+ permit icmp Any host www.bet100.com log
+ permit tcp Any host www.bet100.com eq 22 log
+ permit tcp Any host www.bet100.com eq 53 log
+ Int gi 1
+  ip access-group FWP4 in
+  end
+
+### Remember Ports
+Create an access-list named FWP6 to open the following ports:  
+www.bet100.com open only sccp, sip, imap, smtp, pop3, ftp, tftp, ntp
+
+~~~
+!@UTM-PH
+conf t
+ no ip access-list extended FWP6
+ ip access-list extended FWP6
+ permit tcp Any host www.bet100.com eq 25 log
+ permit tcp Any host www.bet100.com eq 21 log
+ permit udp Any host www.bet100.com eq 69 log
+ permit tcp Any host www.bet100.com eq 2000 log
+ permit tcp Any host www.bet100.com eq 143 log
+ permit tcp Any host www.bet100.com eq 5060 log
+ permit udp Any host www.bet100.com eq 123 log
+ permit tcp Any host www.bet100.com eq 110 log
+ Int gi 1
+  ip access-group FWP6 in
+  end
+
+!@BALIK
+conf t
+ int g1
+ no ip access-group FWP6 in
+ end
+
+
+
+#########
+!@BLDG-PH
+sudo su
+hostname BLDG-PH
+ifconfig eth0 10.11.11.101 netmask 255.255.255.224 up
+route add default gw 10.11.11.113
+ping 10.11.11.113
+
+!@BLDG-JP-1
+sudo su
+hostname BLDG-JP-1
+ifconfig eth0 10.21.21.211 netmask 255.255.255.240 up
+route add default gw 10.21.21.213
+ping 10.21.21.213
+
+
+===========SecureConnection
+
+!@UTM-PH
+conf t
+ hostname UTM-PH-SECURE
+ ip domain name ccna.key
+ crypto key generate rsa modulus 2048 label key
+ !
+ ip ssh version 2
+ line vty 0 14
+  transport input all
+  login local
+  username lebronjames privilege 15 secret pass
+  end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
