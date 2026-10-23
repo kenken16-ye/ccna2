@@ -1,0 +1,139 @@
+### DAY 5 ###
+
+IPv6 Subnetting			8 4 2 1
+
+globe: IPv6 deploy to these offices:
+			SITES/SUBNETS
+	SG	JP	Cebu	Davao	Makati	BGC	
+	8192s	4096s	16s	8s	512s	1024s
+convert	2r13	2r12	2r4	2r3	2r9	2r10
+add /48	/61	/60	/52	/51	/57	/58
+Ifinger	4sF8i	3sF1i	1sF1i	1sF2i	3sF8i	3sF4i	
+
+1st off	0000	0000	0000	0000
+C:Convert
+A:Add
+I:Ifinger mo
+
+
+### EDGE ###
+conf t
+ ipv6 unicast-routing
+ int loopback 0
+  ipv6 add 2001:fd80:1e0a:0000::fafa/61
+ int loopback 1
+  ipv6 add 2001:fd80:1e0a:0008::fafa/61
+ int loopback 2
+  ipv6 add 2001:fd80:1e0a:0010::fafa/61
+ int loopback 3
+  ipv6 add 2001:fd80:1e0a:0018::fafa/61
+ int loopback 4
+  ipv6 add 2001:fd80:1e0a:0020::fafa/61
+  do sh ipv6 int bri
+
+
+subnet 2001:fd8:2f1:1031::/64 to these sites: and implement:
+		SITES
+		512sites	64s	8s	2048		256s
+convert		2r9b		2r6b	2r3b	2r11b		2r8b
+add /64		/73		/70	/67	/75		
+ifinger		3sF8i		2sF4i	1sF2i	3sF2i
+
+1st office	0000		0000	0000	0000
+2nd office	0080		0400	2000	0020
+3rd		0100		0800	4000	0040
+4th		0180		0c00	6000	0060
+5th		0200		1000	8000 	0080
+6th		0280		1400	a000	00a0
+7th		0300		1800	c000	00c0
+
+
+### DEPLOY SITES ###
+SITE: 64 sites!! (/70)
+conf t
+ ipv6 unicast-routing
+ int loopback 0
+  ipv6 add 2001:fd8:2f1:1031:0000::fafa/70
+ int loopback 1
+  ipv6 add 2001:fd8:2f1:1031:0400::fafa/70
+ int loopback 2
+  ipv6 add 2001:fd8:2f1:1031:0800::fafa/70  
+ int loopback 3
+  ipv6 add 2001:fd8:2f1:1031:0c00::fafa/70
+  do sh ipv6 int bri
+
+
+SITE: 2048 sites!! (/75)
+conf t
+ ipv6 unicast-routing
+ int loopback 0
+  ipv6 add 2001:fd8:2f1:1031:0000::fafa/75
+ int loopback 1
+  ipv6 add 2001:fd8:2f1:1031:0020::fafa/75
+ int loopback 2
+  ipv6 add 2001:fd8:2f1:1031:0040::fafa/75  
+ int loopback 3
+  ipv6 add 2001:fd8:2f1:1031:0060::fafa/75
+  do sh ipv6 int bri
+ 
+
+
+### HOW TO GET YOUR BOSS FIRED ###
+
+user: kali
+pass: kali
+
+sudo yersinia -G
+ok
+sudo poweroff
+
+### RICH KID PROBLEM ###
+!@TAAS:PLDT
+config t
+hostname coretaasPLDT
+Track 1 Int gi 0/1 line-protocol
+Int vlan 1
+standby 1 ip 10.92.1.6
+standby 1 preempt
+standby 1 Priority 150
+standby 1 Track 1 decrement 60
+
+
+!@BABA:GLOBE
+config t
+hostname corebabaGLOBE
+Int vlan 1
+standby 1 ip 10.92.1.6
+standby 1 preempt
+standby 1 Priority 100
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
